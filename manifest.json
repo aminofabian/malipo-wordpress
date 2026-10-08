@@ -1,0 +1,10 @@
+{
+  "version": "__VERSION__",
+  "package": "https://kioskpay.co.ke/malipo-payments-__VERSION__.zip",
+  "requires": "6.0",
+  "tested": "6.7",
+  "requires_php": "7.4",
+  "homepage": "https://kioskpay.co.ke/wordpress/",
+  "description": "Accept M-Pesa payments on your WordPress shop through KioskPay. Ships a WooCommerce gateway and a [malipo_pay] shortcode.",
+  "changelog": "<h4>0.1.3</h4><ul><li>Self-updates from kioskpay.co.ke &mdash; new versions appear under Dashboard &rarr; Updates.</li></ul><h4>0.1.2</h4><ul><li>Rebranded to KioskPay across the whole admin.</li><li>Added the Client ID field and HTTP Basic authentication.</li><li>Corrected the API address to <code>https://backend.kioskpay.co.ke</code>.</li><li>New guided settings page with a <strong>Settings</strong> link on the Plugins row.</li></ul>"
+}

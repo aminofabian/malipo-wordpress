@@ -1,0 +1,134 @@
+/* Malipo — M-Pesa payments. Matched to the KioskPay marketing palette. */
+
+.malipo-form {
+	max-width: 26rem;
+	margin: 1.5rem 0;
+	padding: 1.5rem;
+	background: #fff;
+	border: 1px solid rgba(10, 10, 10, 0.12);
+	border-radius: 16px;
+	box-shadow: 0 22px 50px -28px rgba(10, 10, 10, 0.45);
+}
+
+.malipo-form__title {
+	margin: 0 0 0.35rem;
+	font-size: 1.05rem;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+}
+
+.malipo-form__amount {
+	margin: 0 0 1.1rem;
+	font-size: 1.8rem;
+	font-weight: 600;
+	letter-spacing: -0.03em;
+}
+
+.malipo-field {
+	display: grid;
+	gap: 0.35rem;
+	margin-bottom: 1rem;
+}
+
+.malipo-field span {
+	font-size: 0.82rem;
+	color: #3a3a3a;
+}
+
+.malipo-field input {
+	width: 100%;
+	padding: 0.8rem 0.9rem;
+	font: inherit;
+	font-size: 1.05rem;
+	border: 1px solid rgba(10, 10, 10, 0.12);
+	border-radius: 10px;
+	background: #fff;
+	color: #0a0a0a;
+}
+
+.malipo-field input:focus {
+	outline: none;
+	border-color: #0f6b68;
+	box-shadow: 0 0 0 3px rgba(15, 107, 104, 0.2);
+}
+
+.malipo-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 42px;
+	padding: 0.5rem 1.15rem;
+	border: 1px solid #0a0a0a;
+	border-radius: 6px;
+	background: #0a0a0a;
+	color: #fff;
+	font: inherit;
+	font-size: 0.9rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition:
+		transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+		background 180ms ease;
+}
+
+.malipo-btn:hover {
+	transform: translateY(-1px);
+	background: #1c1c1c;
+}
+
+.malipo-btn:disabled {
+	opacity: 0.6;
+	cursor: progress;
+	transform: none;
+}
+
+.malipo-status {
+	margin-top: 1rem;
+	font-size: 0.88rem;
+	line-height: 1.5;
+}
+
+.malipo-status[data-kind="pending"] {
+	color: #3a3a3a;
+}
+
+.malipo-status[data-kind="settled"] {
+	color: #0a524f;
+	font-weight: 600;
+}
+
+.malipo-status[data-kind="failed"] {
+	color: #9b1c1c;
+	font-weight: 600;
+}
+
+.malipo-poll {
+	margin: 1.25rem 0;
+	padding: 0.9rem 1.1rem;
+	border: 1px solid rgba(10, 10, 10, 0.12);
+	border-radius: 12px;
+	background: #f7f8f8;
+	font-size: 0.95rem;
+}
+
+.malipo-poll[data-kind="settled"] {
+	border-color: rgba(15, 107, 104, 0.28);
+	background: rgba(15, 107, 104, 0.1);
+	color: #0a524f;
+	font-weight: 600;
+}
+
+.malipo-poll[data-kind="failed"] {
+	border-color: rgba(155, 28, 28, 0.3);
+	background: rgba(155, 28, 28, 0.07);
+	color: #9b1c1c;
+	font-weight: 600;
+}
+
+.malipo-notice {
+	padding: 0.75rem 0.9rem;
+	border: 1px solid rgba(10, 10, 10, 0.12);
+	border-radius: 10px;
+	background: #fef27f;
+	color: #0a0a0a;
+}

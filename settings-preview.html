@@ -1,0 +1,411 @@
+<!doctype html>
+<!--
+  Static design preview of the plugin's Settings page (Settings -> KioskPay).
+  NOT part of the plugin runtime — delete or exclude this file before packaging.
+  It mirrors the output of Malipo_Settings::render_page(), render_status() and
+  render_notice() so the wording and every state can be reviewed in a browser
+  without a WordPress install. Use the "Preview state" chips to switch states.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KioskPay — M-Pesa payments (settings preview)</title>
+    <style>
+      :root {
+        --wp-blue: #2271b1;
+        --wp-text: #1d2327;
+        --wp-muted: #646970;
+        --wp-border: #c3c4c7;
+        --wp-ground: #f0f0f1;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 24px 32px 64px;
+        background: var(--wp-ground);
+        color: var(--wp-text);
+        font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans,
+          Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      }
+      .wrap {
+        max-width: 920px;
+      }
+      h1 {
+        font-size: 23px;
+        font-weight: 400;
+        margin: 0 0 8px;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 20px 0 8px;
+      }
+      p {
+        margin: 0 0 12px;
+      }
+      a {
+        color: var(--wp-blue);
+      }
+      .notice {
+        background: #fff;
+        border: 1px solid var(--wp-border);
+        border-left-width: 4px;
+        border-left-style: solid;
+        padding: 1px 12px;
+        margin: 16px 0;
+      }
+      .notice p {
+        margin: 12px 0;
+      }
+      .notice-warning {
+        border-left-color: #dba617;
+      }
+      .notice-success {
+        border-left-color: #00a32a;
+      }
+      .notice-error {
+        border-left-color: #d63638;
+      }
+      .steps {
+        background: #fff;
+        border: 1px solid var(--wp-border);
+        border-left: 4px solid #0f6b68;
+        padding: 16px 20px;
+        margin: 16px 0;
+      }
+      .steps h2 {
+        margin-top: 0;
+      }
+      .steps ol {
+        margin: 0;
+        padding-left: 20px;
+        line-height: 1.7;
+      }
+      form {
+        margin: 0;
+      }
+      table.form-table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 0 0 8px;
+      }
+      table.form-table th {
+        text-align: left;
+        vertical-align: top;
+        width: 180px;
+        padding: 16px 10px 16px 0;
+        font-weight: 600;
+      }
+      table.form-table td {
+        padding: 14px 10px;
+      }
+      input[type="text"],
+      input[type="password"],
+      input[type="url"] {
+        width: 25em;
+        max-width: 100%;
+        padding: 6px 8px;
+        border: 1px solid #8c8f94;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .description {
+        color: var(--wp-muted);
+        font-style: italic;
+        margin: 5px 0 0;
+      }
+      .button {
+        display: inline-block;
+        text-decoration: none;
+        border: 1px solid var(--wp-blue);
+        background: #f6f7f7;
+        color: var(--wp-blue);
+        border-radius: 3px;
+        padding: 5px 12px;
+        cursor: pointer;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .button-primary {
+        background: var(--wp-blue);
+        border-color: var(--wp-blue);
+        color: #fff;
+      }
+      hr {
+        border: 0;
+        border-top: 1px solid var(--wp-border);
+        margin: 24px 0;
+      }
+      code {
+        background: var(--wp-ground);
+        padding: 2px 5px;
+      }
+      .banner {
+        background: #1d2327;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: 12px;
+      }
+      .lede {
+        max-width: 50rem;
+        font-size: 14px;
+      }
+
+      /* Preview-only controls */
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border: 1px dashed var(--wp-border);
+        border-radius: 4px;
+        padding: 10px 14px;
+        margin-bottom: 20px;
+        font-size: 12px;
+        color: var(--wp-muted);
+      }
+      .controls .chip {
+        border: 1px solid var(--wp-border);
+        background: #f6f7f7;
+        color: var(--wp-text);
+        border-radius: 999px;
+        padding: 3px 12px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .controls .chip.is-on {
+        background: var(--wp-blue);
+        border-color: var(--wp-blue);
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="banner">
+        Static design preview — this is the plugin's Settings page. Not part of the plugin.
+      </div>
+
+      <div class="controls">
+        <span>Preview state:</span>
+        <button type="button" class="chip is-on" data-state="empty">Not set up</button>
+        <button type="button" class="chip" data-state="connected">Details saved</button>
+        <button type="button" class="chip" data-state="ok">Test: works</button>
+        <button type="button" class="chip" data-state="bad">Test: key rejected</button>
+        <button type="button" class="chip" data-state="missing">Test: key missing</button>
+        <button type="button" class="chip" data-state="unreachable">Test: unreachable</button>
+      </div>
+
+      <h1>KioskPay — M-Pesa payments</h1>
+      <p class="lede">
+        Accept M-Pesa payments on your WordPress shop. Set this up once by following the three
+        steps below — it takes about five minutes.
+      </p>
+
+      <div id="status-banner" class="notice notice-warning">
+        <p><strong>Not set up yet.</strong> Follow the three steps below to start taking M-Pesa payments.</p>
+      </div>
+
+      <div id="test-notice" class="notice" hidden></div>
+
+      <div class="steps">
+        <h2>Get set up in 3 steps</h2>
+        <ol>
+          <li>
+            <strong>Create your KioskPay account.</strong> Go to
+            <a href="https://kioskpay.co.ke" target="_blank" rel="noopener noreferrer"
+              >https://kioskpay.co.ke</a
+            >
+            and sign up. It is free. Add where your money should land — a till, paybill, or bank
+            account.
+          </li>
+          <li>
+            <strong>Copy your three codes.</strong> KioskPay shows a Client ID, a Payment key, and
+            a Signing code. Copy all three.
+          </li>
+          <li>
+            <strong>Paste them below and save.</strong> Paste each code into the matching box,
+            press Save changes, then press Test connection.
+          </li>
+        </ol>
+      </div>
+
+      <form>
+        <h2>Connect your shop</h2>
+        <p>
+          Sign up at KioskPay, add where money lands, then copy the three codes it shows you and
+          paste them below. You do this only once.
+        </p>
+        <p class="description">
+          Find your codes in your KioskPay account under API keys — each one has a copy button.
+          Sign in at
+          <a href="https://kioskpay.co.ke" target="_blank" rel="noopener noreferrer"
+            >https://kioskpay.co.ke</a
+          >
+          to see them.
+        </p>
+
+        <table class="form-table">
+          <tr>
+            <th>Client ID</th>
+            <td>
+              <input type="text" id="client-id" placeholder="pk_live_…" />
+              <p class="description">
+                Paste the Client ID from your KioskPay account. It starts with pk_live_. It is not
+                a secret.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <th>Payment key</th>
+            <td>
+              <input type="password" id="payment-key" placeholder="sk_live_…" />
+              <p class="description">
+                Paste the Payment key from your KioskPay account. It starts with sk_live_, and is
+                only shown once.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <th>Signing code</th>
+            <td>
+              <input type="password" id="signing-code" placeholder="whsec_…" />
+              <p class="description">
+                Paste the Signing code from your KioskPay account. It starts with whsec_. This
+                keeps payment confirmations secure.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <th>API address</th>
+            <td>
+              <input type="url" value="https://backend.kioskpay.co.ke" />
+              <p class="description">Leave this as it is unless KioskPay tells you otherwise.</p>
+            </td>
+          </tr>
+        </table>
+
+        <button class="button button-primary" type="button">Save changes</button>
+      </form>
+
+      <form style="margin-top: 8px">
+        <button class="button" type="button">Test connection</button>
+        <p class="description">
+          Sends a quick check to KioskPay to confirm your payment key works.
+        </p>
+      </form>
+
+      <hr />
+
+      <h2>Callback address</h2>
+      <p>
+        Already set up for you. This is where KioskPay reports each payment, and the plugin checks
+        it before trusting it.
+      </p>
+      <p><code>https://your-shop.example/wp-json/malipo/v1/webhook</code></p>
+      <p>
+        Paste this address into KioskPay if it asks for a callback URL. Not sure where to find your
+        codes? See the
+        <a href="https://kioskpay.co.ke/wordpress/" target="_blank" rel="noopener noreferrer"
+          >setup guide</a
+        >, or contact KioskPay support and we will walk you through it.
+      </p>
+    </div>
+
+    <script>
+      // Preview-only: mirrors Malipo_Settings::render_status() + render_notice().
+      (function () {
+        var DEMO = {
+          clientId: "pk_live_8f3a2c9d7b1e4f60",
+          paymentKey: "sk_live_4c1d9a2f6e8b03d7",
+          signingCode: "whsec_5a7c2e9f1b4d6083",
+        };
+
+        var ALMOST = [
+          "Almost there.",
+          "Your KioskPay details are filled in. Press \u201CTest connection\u201D below to be sure they work.",
+        ];
+        var NOT_YET = [
+          "Not set up yet.",
+          "Follow the three steps below to start taking M-Pesa payments.",
+        ];
+
+        var STATES = {
+          empty: { status: ["notice-warning"].concat(NOT_YET), notice: null, filled: false },
+          connected: { status: ["notice-success"].concat(ALMOST), notice: null, filled: true },
+          ok: {
+            status: ["notice-success"].concat(ALMOST),
+            notice: ["notice-success", "Connection works \u2014 your payment key was accepted."],
+            filled: true,
+          },
+          bad: {
+            status: ["notice-success"].concat(ALMOST),
+            notice: [
+              "notice-error",
+              "That payment key was not accepted. Copy it again from your KioskPay account.",
+            ],
+            filled: true,
+          },
+          missing: {
+            status: ["notice-warning"].concat(NOT_YET),
+            notice: ["notice-warning", "Add your payment key first, then test again."],
+            filled: false,
+          },
+          unreachable: {
+            status: ["notice-success"].concat(ALMOST),
+            notice: [
+              "notice-error",
+              "Could not reach KioskPay. Check the API address and try again.",
+            ],
+            filled: true,
+          },
+        };
+
+        var statusEl = document.getElementById("status-banner");
+        var noticeEl = document.getElementById("test-notice");
+        var clientEl = document.getElementById("client-id");
+        var keyEl = document.getElementById("payment-key");
+        var signEl = document.getElementById("signing-code");
+
+        function classOf(kind) {
+          return kind.replace("notice-", "notice notice-");
+        }
+
+        function apply(state) {
+          var s = STATES[state] || STATES.empty;
+
+          statusEl.className = classOf(s.status[0]);
+          statusEl.innerHTML = "<p><strong>" + s.status[1] + "</strong> " + s.status[2] + "</p>";
+
+          if (s.notice) {
+            noticeEl.className = classOf(s.notice[0]) + " inline";
+            noticeEl.innerHTML = "<p>" + s.notice[1] + "</p>";
+            noticeEl.hidden = false;
+          } else {
+            noticeEl.hidden = true;
+            noticeEl.innerHTML = "";
+          }
+
+          clientEl.value = s.filled ? DEMO.clientId : "";
+          keyEl.value = s.filled ? DEMO.paymentKey : "";
+          signEl.value = s.filled ? DEMO.signingCode : "";
+
+          document.querySelectorAll(".chip").forEach(function (chip) {
+            chip.classList.toggle("is-on", chip.getAttribute("data-state") === state);
+          });
+        }
+
+        document.querySelectorAll(".chip").forEach(function (chip) {
+          chip.addEventListener("click", function () {
+            apply(chip.getAttribute("data-state"));
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
