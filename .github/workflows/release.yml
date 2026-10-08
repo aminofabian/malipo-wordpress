@@ -1,0 +1,93 @@
+name: Release
+
+# Cut a release by pushing a tag, e.g.:
+#   git tag v0.1.4 && git push origin v0.1.4
+# Or run it by hand from the Actions tab (workflow_dispatch) with a version.
+#
+# It builds the plugin (lint + stamp + zip + manifest), copies the zip and
+# manifest into the site repo's public/ folder, pushes that, and opens a
+# GitHub Release. The push to the site repo triggers the Coolify deploy.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g. 0.1.4)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      SITE_REPO: aminofabian/malipo-front
+    steps:
+      - name: Checkout plugin source
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+
+      - name: Ensure zip is available
+        run: sudo apt-get update && sudo apt-get install -y zip
+
+      - name: Work out the version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            v="${{ github.event.inputs.version }}"
+          else
+            v="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          echo "Releasing KioskPay plugin $v"
+
+      - name: Build (lint, stamp, zip, manifest)
+        run: ./build.sh "${{ steps.ver.outputs.version }}"
+
+      - name: Checkout the site repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.SITE_REPO }}
+          token: ${{ secrets.MALIPO_FRONT_TOKEN }}
+          path: _site
+
+      - name: Publish the zip and manifest into public/
+        run: |
+          v="${{ steps.ver.outputs.version }}"
+          cp "dist/malipo-payments-$v.zip" _site/public/
+          cp "dist/malipo-payments.json" _site/public/
+          ls -l _site/public/malipo-payments*
+
+      - name: Push the site repo
+        run: |
+          v="${{ steps.ver.outputs.version }}"
+          cd _site
+          git config user.name "kioskpay-release"
+          git config user.email "releases@kioskpay.co.ke"
+          git add public/
+          if git diff --cached --quiet; then
+            echo "Nothing new to publish."
+          else
+            git commit -m "Publish KioskPay plugin $v"
+            git push origin HEAD:main
+          fi
+
+      - name: Open a GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v="${{ steps.ver.outputs.version }}"
+          gh release create "v$v" "dist/malipo-payments-$v.zip" \
+            --repo "${{ github.repository }}" \
+            --title "KioskPay plugin $v" \
+            --notes "Published to kioskpay.co.ke. See malipo-payments.json for the changelog."
