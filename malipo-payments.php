@@ -3,7 +3,7 @@
  * Plugin Name:       KioskPay — M-Pesa Payments
  * Plugin URI:        https://kioskpay.co.ke/wordpress/
  * Description:       Accept M-Pesa payments on your WordPress shop through KioskPay. Ships a WooCommerce gateway and a [malipo_pay] shortcode. Sign up at kioskpay.co.ke, copy your keys, no Daraja app.
- * Version:           0.2.0
+ * Version:           0.2.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            KioskPay
@@ -20,7 +20,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MALIPO_VERSION', '0.2.0' );
+define( 'MALIPO_VERSION', '0.2.1' );
 define( 'MALIPO_FILE', __FILE__ );
 define( 'MALIPO_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MALIPO_URL', plugin_dir_url( __FILE__ ) );
