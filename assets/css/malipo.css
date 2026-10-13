@@ -132,3 +132,16 @@
 	background: #fef27f;
 	color: #0a0a0a;
 }
+
+/* Sandbox banner above the checkout form. On-brand, so the gateway markup holds
+   no inline style. */
+.malipo-testmode {
+	margin: 0 0 1rem;
+	padding: 0.7rem 0.9rem;
+	border: 1px solid rgba(10, 10, 10, 0.12);
+	border-left: 3px solid #b7791f;
+	border-radius: 8px;
+	background: rgba(254, 242, 127, 0.4);
+	color: #6b4e00;
+	font-size: 0.9rem;
+}

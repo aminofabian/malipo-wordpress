@@ -20,7 +20,7 @@ class Malipo_Gateway extends WC_Payment_Gateway {
 		add_action( 'malipo_payment_settled', array( __CLASS__, 'on_settled' ), 10, 2 );
 		add_action( 'malipo_payment_failed', array( __CLASS__, 'on_failed' ), 10, 2 );
 		add_action( 'woocommerce_thankyou_malipo', array( __CLASS__, 'thankyou' ) );
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_on_thankyou' ), 20 );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ), 20 );
 	}
 
 	/**
@@ -107,7 +107,7 @@ class Malipo_Gateway extends WC_Payment_Gateway {
 		}
 
 		if ( Malipo_API::is_test_mode() ) {
-			echo '<p class="malipo-testmode" style="font-weight:600;color:#8a6d00">' . esc_html__( 'Test mode — this is a sandbox payment and no real money will move.', 'malipo-payments' ) . '</p>';
+			echo '<p class="malipo-testmode"><strong>' . esc_html__( 'Test mode — this is a sandbox payment and no real money will move.', 'malipo-payments' ) . '</strong></p>';
 		}
 
 		$phone = '';
@@ -258,11 +258,18 @@ class Malipo_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Enqueue the poller on the order-received page.
+	 * Enqueue the stylesheet on checkout (for the sandbox banner) and the poller on
+	 * the order-received page.
 	 */
-	public static function enqueue_on_thankyou() {
-		if ( function_exists( 'is_order_received_page' ) && is_order_received_page() ) {
+	public static function enqueue_assets() {
+		$on_checkout = function_exists( 'is_checkout' ) && is_checkout();
+		$on_received = function_exists( 'is_order_received_page' ) && is_order_received_page();
+
+		if ( $on_checkout || $on_received ) {
 			wp_enqueue_style( 'malipo' );
+		}
+
+		if ( $on_received ) {
 			wp_enqueue_script( 'malipo-pay' );
 		}
 	}
