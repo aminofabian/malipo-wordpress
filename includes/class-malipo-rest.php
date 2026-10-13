@@ -148,7 +148,8 @@ class Malipo_REST {
 	 * @return WP_REST_Response
 	 */
 	public static function webhook( WP_REST_Request $request ) {
-		$secret = (string) Malipo_Settings::get( 'webhook_secret', '' );
+		$active = Malipo_Settings::active();
+		$secret = (string) $active['webhook_secret'];
 		if ( '' === $secret ) {
 			return new WP_REST_Response( array( 'error' => 'webhook_secret_missing' ), 500 );
 		}

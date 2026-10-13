@@ -52,11 +52,22 @@ class Malipo_API {
 	 * @return self
 	 */
 	public static function from_settings() {
+		$active = Malipo_Settings::active();
+
 		return new self(
 			Malipo_Settings::get( 'api_base', 'https://backend.kioskpay.co.ke' ),
-			Malipo_Settings::get( 'secret_key', '' ),
-			Malipo_Settings::get( 'client_id', '' )
+			$active['secret_key'],
+			$active['client_id']
 		);
+	}
+
+	/**
+	 * Whether the shop is in sandbox (test) mode.
+	 *
+	 * @return bool
+	 */
+	public static function is_test_mode() {
+		return Malipo_Settings::is_test_mode();
 	}
 
 	/**

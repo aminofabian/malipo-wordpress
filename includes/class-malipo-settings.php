@@ -37,10 +37,14 @@ class Malipo_Settings {
 	 */
 	public static function defaults() {
 		return array(
-			'api_base'       => 'https://backend.kioskpay.co.ke',
-			'client_id'      => '',
-			'secret_key'     => '',
-			'webhook_secret' => '',
+			'api_base'            => 'https://backend.kioskpay.co.ke',
+			'client_id'           => '',
+			'secret_key'          => '',
+			'webhook_secret'      => '',
+			'test_mode'           => '0',
+			'test_client_id'      => '',
+			'test_secret_key'     => '',
+			'test_webhook_secret' => '',
 		);
 	}
 
@@ -75,6 +79,40 @@ class Malipo_Settings {
 	public static function get( $key, $default = '' ) {
 		$all = self::all();
 		return isset( $all[ $key ] ) ? $all[ $key ] : $default;
+	}
+
+	/**
+	 * Whether the shop is in sandbox (test) mode.
+	 *
+	 * @return bool
+	 */
+	public static function is_test_mode() {
+		return '1' === (string) self::get( 'test_mode', '0' );
+	}
+
+	/**
+	 * The credential set the plugin should use right now.
+	 *
+	 * In test mode the `test_*` codes are used; otherwise the live codes. The
+	 * webhook secret switches with the keys so a test callback verifies against
+	 * the test signing code.
+	 *
+	 * @return array{client_id:string,secret_key:string,webhook_secret:string}
+	 */
+	public static function active() {
+		if ( self::is_test_mode() ) {
+			return array(
+				'client_id'      => (string) self::get( 'test_client_id', '' ),
+				'secret_key'     => (string) self::get( 'test_secret_key', '' ),
+				'webhook_secret' => (string) self::get( 'test_webhook_secret', '' ),
+			);
+		}
+
+		return array(
+			'client_id'      => (string) self::get( 'client_id', '' ),
+			'secret_key'     => (string) self::get( 'secret_key', '' ),
+			'webhook_secret' => (string) self::get( 'webhook_secret', '' ),
+		);
 	}
 
 	/**
@@ -133,6 +171,18 @@ class Malipo_Settings {
 		add_settings_field( 'malipo_secret_key', __( 'Payment key', 'malipo-payments' ), array( __CLASS__, 'field_secret_key' ), 'malipo', 'malipo_keys' );
 		add_settings_field( 'malipo_webhook_secret', __( 'Signing code', 'malipo-payments' ), array( __CLASS__, 'field_webhook_secret' ), 'malipo', 'malipo_keys' );
 		add_settings_field( 'malipo_api_base', __( 'API address', 'malipo-payments' ), array( __CLASS__, 'field_api_base' ), 'malipo', 'malipo_keys' );
+
+		add_settings_section(
+			'malipo_test',
+			__( 'Sandbox (test mode)', 'malipo-payments' ),
+			array( __CLASS__, 'section_test' ),
+			'malipo'
+		);
+
+		add_settings_field( 'malipo_test_mode', __( 'Test mode', 'malipo-payments' ), array( __CLASS__, 'field_test_mode' ), 'malipo', 'malipo_test' );
+		add_settings_field( 'malipo_test_client_id', __( 'Test client ID', 'malipo-payments' ), array( __CLASS__, 'field_test_client_id' ), 'malipo', 'malipo_test' );
+		add_settings_field( 'malipo_test_secret_key', __( 'Test payment key', 'malipo-payments' ), array( __CLASS__, 'field_test_secret_key' ), 'malipo', 'malipo_test' );
+		add_settings_field( 'malipo_test_webhook_secret', __( 'Test signing code', 'malipo-payments' ), array( __CLASS__, 'field_test_webhook_secret' ), 'malipo', 'malipo_test' );
 	}
 
 	/**
@@ -159,6 +209,14 @@ class Malipo_Settings {
 		}
 		if ( isset( $input['webhook_secret'] ) ) {
 			$out['webhook_secret'] = sanitize_text_field( trim( (string) $input['webhook_secret'] ) );
+		}
+		if ( isset( $input['test_mode'] ) ) {
+			$out['test_mode'] = in_array( (string) $input['test_mode'], array( '1', 'yes', 'on' ), true ) ? '1' : '0';
+		}
+		foreach ( array( 'test_client_id', 'test_secret_key', 'test_webhook_secret' ) as $field ) {
+			if ( isset( $input[ $field ] ) ) {
+				$out[ $field ] = sanitize_text_field( trim( (string) $input[ $field ] ) );
+			}
 		}
 
 		return $out;
@@ -227,6 +285,60 @@ class Malipo_Settings {
 	}
 
 	/**
+	 * Sandbox section intro copy.
+	 */
+	public static function section_test() {
+		echo '<p>' . esc_html__( 'Try the whole checkout without moving any real money. Paste the sandbox codes from your KioskPay account, tick “Test mode”, and your shop runs in the sandbox — customers get a simulated payment while you watch it settle.', 'malipo-payments' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Sandbox codes start with pk_test_ and sk_test_. They can never charge anyone. Untick “Test mode” to take real payments again.', 'malipo-payments' ) . '</p>';
+	}
+
+	/**
+	 * Test mode toggle.
+	 */
+	public static function field_test_mode() {
+		printf(
+			'<label><input type="checkbox" name="%1$s[test_mode]" value="1" %2$s /> %3$s</label>',
+			esc_attr( self::OPTION ),
+			checked( self::is_test_mode(), true, false ),
+			esc_html__( 'Run this shop in the sandbox', 'malipo-payments' )
+		);
+		echo '<p class="description">' . esc_html__( 'Customers see a “Test mode” note at checkout and no real money moves.', 'malipo-payments' ) . '</p>';
+	}
+
+	/**
+	 * Test client ID field.
+	 */
+	public static function field_test_client_id() {
+		printf(
+			'<input type="text" class="regular-text" autocomplete="off" autocapitalize="off" spellcheck="false" name="%1$s[test_client_id]" value="%2$s" placeholder="pk_test_…" />',
+			esc_attr( self::OPTION ),
+			esc_attr( self::get( 'test_client_id', '' ) )
+		);
+	}
+
+	/**
+	 * Test payment key field.
+	 */
+	public static function field_test_secret_key() {
+		printf(
+			'<input type="password" class="regular-text" autocomplete="off" autocapitalize="off" spellcheck="false" name="%1$s[test_secret_key]" value="%2$s" placeholder="sk_test_…" />',
+			esc_attr( self::OPTION ),
+			esc_attr( self::get( 'test_secret_key', '' ) )
+		);
+	}
+
+	/**
+	 * Test signing code field.
+	 */
+	public static function field_test_webhook_secret() {
+		printf(
+			'<input type="password" class="regular-text" autocomplete="off" autocapitalize="off" spellcheck="false" name="%1$s[test_webhook_secret]" value="%2$s" placeholder="whsec_test_…" />',
+			esc_attr( self::OPTION ),
+			esc_attr( self::get( 'test_webhook_secret', '' ) )
+		);
+	}
+
+	/**
 	 * Render the settings page.
 	 */
 	public static function render_page() {
@@ -235,8 +347,8 @@ class Malipo_Settings {
 		}
 		$webhook   = rest_url( 'malipo/v1/webhook' );
 		$result    = isset( $_GET['malipo_test'] ) ? sanitize_key( wp_unslash( $_GET['malipo_test'] ) ) : '';
-		$connected = '' !== trim( (string) self::get( 'secret_key', '' ) )
-			&& '' !== trim( (string) self::get( 'client_id', '' ) );
+		$active    = self::active();
+		$connected = '' !== trim( $active['secret_key'] ) && '' !== trim( $active['client_id'] );
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'KioskPay — M-Pesa payments', 'malipo-payments' ); ?></h1>
@@ -246,6 +358,7 @@ class Malipo_Settings {
 
 			<?php self::render_status( $connected ); ?>
 			<?php self::render_notice( $result ); ?>
+			<?php self::render_test_banner(); ?>
 
 			<div style="max-width:50rem;background:#fff;border:1px solid #dcdcde;border-left:4px solid #0f6b68;padding:16px 20px;margin:16px 0">
 				<h2 style="margin-top:0"><?php esc_html_e( 'Get set up in 3 steps', 'malipo-payments' ); ?></h2>
@@ -297,6 +410,21 @@ class Malipo_Settings {
 			</p>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Warn that the shop is running in the sandbox.
+	 */
+	private static function render_test_banner() {
+		if ( ! self::is_test_mode() ) {
+			return;
+		}
+
+		printf(
+			'<div class="notice notice-warning inline"><p><strong>%1$s</strong> %2$s</p></div>',
+			esc_html__( 'Test mode is on.', 'malipo-payments' ),
+			esc_html__( 'This shop is using sandbox codes. No real money will move until you untick “Test mode”.', 'malipo-payments' )
+		);
 	}
 
 	/**

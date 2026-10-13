@@ -106,6 +106,10 @@ class Malipo_Gateway extends WC_Payment_Gateway {
 			echo wp_kses_post( wpautop( $this->description ) );
 		}
 
+		if ( Malipo_API::is_test_mode() ) {
+			echo '<p class="malipo-testmode" style="font-weight:600;color:#8a6d00">' . esc_html__( 'Test mode — this is a sandbox payment and no real money will move.', 'malipo-payments' ) . '</p>';
+		}
+
 		$phone = '';
 		if ( function_exists( 'WC' ) && WC()->customer ) {
 			$phone = (string) WC()->customer->get_billing_phone();
